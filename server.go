@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/gorilla/mux"
 	"github.com/yuhengfdada/go-microservices/handlers"
 )
 
@@ -15,7 +16,7 @@ func main() {
 	hello := handlers.NewHello(l)
 	product := handlers.NewProduct(l)
 
-	sm := http.NewServeMux()
+	sm := mux.NewRouter()
 	sm.Handle("/", hello)
 	sm.Handle("/products", product)
 
