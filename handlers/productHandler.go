@@ -19,6 +19,8 @@ func NewProductHandler(l *log.Logger) *ProductHandler {
 	return &ProductHandler{l}
 }
 
+// swagger:route GET /products products listProducts
+// Return a list of products from the database
 func (p *ProductHandler) GetProducts(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("GetProducts() called")
 	pl := data.GetProducts()

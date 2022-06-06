@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/mux"
 	"github.com/yuhengfdada/go-microservices/handlers"
 )
@@ -18,15 +19,21 @@ func main() {
 	sm := mux.NewRouter()
 
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
-	getRouter.HandleFunc("/", productHandler.GetProducts)
+	getRouter.HandleFunc("/products", productHandler.GetProducts)
 
 	putRouter := sm.Methods(http.MethodPut).Subrouter()
-	putRouter.HandleFunc("/{id:[0-9]+}", productHandler.UpdateProduct)
+	putRouter.HandleFunc("/products/{id:[0-9]+}", productHandler.UpdateProduct)
 	putRouter.Use(productHandler.MiddlewareProductConversion)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
-	postRouter.HandleFunc("/", productHandler.AddProduct)
+	postRouter.HandleFunc("/products", productHandler.AddProduct)
 	postRouter.Use(productHandler.MiddlewareProductConversion)
+
+	// set up the server to look for the swagger file
+	opts := middleware.RedocOpts{SpecURL: "/swagger.yaml"}
+	redocHandler := middleware.Redoc(opts, nil)
+	getRouter.Handle("/docs", redocHandler)
+	getRouter.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
 
 	go func() {
 		err := http.ListenAndServe(":8080", sm)
