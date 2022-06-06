@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -53,7 +54,13 @@ func (p *ProductHandler) MiddlewareProductConversion(next http.Handler) http.Han
 		prod := &data.Product{} // prod is type *data.Product
 		err := prod.FromJSON(r.Body)
 		if err != nil {
-			http.Error(rw, "Bad request", http.StatusBadRequest)
+			http.Error(rw, "Bad request: error unmarshalling json", http.StatusBadRequest)
+			return
+		}
+		err = prod.Validate()
+		if err != nil {
+			http.Error(rw, fmt.Sprintf("Bad request: error validating product, %s", err), http.StatusBadRequest)
+			return
 		}
 		context := context.WithValue(r.Context(), ProdKey{}, prod)
 		r = r.WithContext(context)
