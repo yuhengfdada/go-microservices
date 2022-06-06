@@ -43,7 +43,17 @@ func GetProducts() Products {
 }
 
 func AddProduct(prod *Product) {
+	prod.ID = nextID()
 	productList = append(productList, prod)
+}
+
+func UpdateProduct(id int, prod *Product) {
+	prod.ID = id
+	productList[id-1] = prod
+}
+
+func nextID() int {
+	return len(productList) + 1
 }
 
 // productList is a hard coded list of products for this

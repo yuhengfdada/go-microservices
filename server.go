@@ -13,12 +13,20 @@ import (
 
 func main() {
 	l := log.New(os.Stdout, "server-api ", log.LstdFlags)
-	hello := handlers.NewHello(l)
-	product := handlers.NewProduct(l)
+	productHandler := handlers.NewProductHandler(l)
 
 	sm := mux.NewRouter()
-	sm.Handle("/", hello)
-	sm.Handle("/products", product)
+
+	getRouter := sm.Methods(http.MethodGet).Subrouter()
+	getRouter.HandleFunc("/", productHandler.GetProducts)
+
+	putRouter := sm.Methods(http.MethodPut).Subrouter()
+	putRouter.HandleFunc("/{id:[0-9]+}", productHandler.UpdateProduct)
+	putRouter.Use(productHandler.MiddlewareProductConversion)
+
+	postRouter := sm.Methods(http.MethodPost).Subrouter()
+	postRouter.HandleFunc("/", productHandler.AddProduct)
+	postRouter.Use(productHandler.MiddlewareProductConversion)
 
 	go func() {
 		err := http.ListenAndServe(":8080", sm)
