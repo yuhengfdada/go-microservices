@@ -1,0 +1,19 @@
+basePath: /
+consumes:
+- application/json
+info:
+  description: Documentation for Product API
+  title: of Product API
+  version: 1.0.0
+paths:
+  /products:
+    get:
+      description: Return a list of products from the database
+      operationId: listProducts
+      tags:
+      - products
+produces:
+- application/json
+schemes:
+- http
+swagger: "2.0"
