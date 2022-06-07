@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	"github.com/go-openapi/runtime/middleware"
+	gorillaHandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/yuhengfdada/go-microservices/handlers"
 )
@@ -38,14 +39,16 @@ func main() {
 	getRouter.Handle("/docs", redocHandler)
 	getRouter.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
 
+	corsMiddleware := gorillaHandlers.CORS(gorillaHandlers.AllowedOrigins([]string{"http://localhost:3000"}))
+
 	go func() {
-		err := http.ListenAndServe(":8080", sm)
+		err := http.ListenAndServe(":9090", corsMiddleware(sm))
 		if err != nil {
 			log.Fatalf("error!")
 			return
 		}
 	}()
-	l.Println("starting server on port 8080")
+	l.Println("starting server on port 9090")
 	// trap sigterm or interupt and gracefully shutdown the server
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
