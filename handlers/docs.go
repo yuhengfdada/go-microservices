@@ -1,4 +1,4 @@
-// Package classification of Product API
+// Package classification Product API
 //
 // Documentation for Product API
 //
