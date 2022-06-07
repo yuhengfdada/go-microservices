@@ -29,6 +29,9 @@ func main() {
 	postRouter.HandleFunc("/products", productHandler.AddProduct)
 	postRouter.Use(productHandler.MiddlewareProductConversion)
 
+	deleteRouter := sm.Methods(http.MethodDelete).Subrouter()
+	deleteRouter.HandleFunc("/products/{id:[0-9]+}", productHandler.DeleteProduct)
+
 	// set up the server to look for the swagger file
 	opts := middleware.RedocOpts{SpecURL: "/swagger.yaml"}
 	redocHandler := middleware.Redoc(opts, nil)

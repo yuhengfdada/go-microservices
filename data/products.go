@@ -10,7 +10,10 @@ import (
 )
 
 // Product defines the structure for an API product
+// swagger:model
 type Product struct {
+	// Product ID
+	// required: true
 	ID          int     `json:"id"`
 	Name        string  `json:"name" validate:"required"`
 	Description string  `json:"description"`
@@ -69,8 +72,24 @@ func UpdateProduct(id int, prod *Product) {
 	productList[id-1] = prod
 }
 
+func DeleteProduct(id int) {
+	var idx int = -1
+	for i, prod := range productList {
+		if prod.ID == id {
+			idx = i
+		}
+	}
+	if idx == -1 {
+		return
+	}
+	productList = append(productList[:idx], productList[idx+1:]...)
+}
+
 func nextID() int {
-	return len(productList) + 1
+	if len(productList) == 0 {
+		return 1
+	}
+	return productList[len(productList)-1].ID + 1
 }
 
 // productList is a hard coded list of products for this
