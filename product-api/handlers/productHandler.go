@@ -8,7 +8,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/yuhengfdada/go-microservices/data"
+	"github.com/yuhengfdada/go-microservices/product-api/data"
 )
 
 type ProductHandler struct {
