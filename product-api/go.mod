@@ -1,4 +1,4 @@
-module github.com/yuhengfdada/go-microservices
+module github.com/yuhengfdada/go-microservices/product-api
 
 go 1.17
 
